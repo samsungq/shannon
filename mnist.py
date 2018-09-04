@@ -159,8 +159,8 @@ with tf.Session() as sess:
 
                 # Validate after each epochs
                 if i % args.validation_rate == 0:
-                    # valid_mi = evaluate_mi(sess, f_j_mean, x_j, y_j, mnist.validation.images, mnist.validation.labels, N_valid)
-                    # f_mi.write("valid mi:" + str(valid_mi) + "\t")
+                    valid_mi = evaluate_mi(sess, f_j_mean, x_j, y_j, mnist.validation.images, mnist.validation.labels, N_valid)
+                    f_mi.write("valid mi:" + str(valid_mi) + "\t")
 
                     # valid_acc_j = evaluate_acc(sess, accuracy_j, x_j, y_j, mnist.validation.images, mnist.validation.labels, N_valid, True)
                     # valid_acc_m = evaluate_acc(sess, accuracy_m, x_m, y_m, mnist.validation.images, mnist.validation.labels, N_valid, False)
