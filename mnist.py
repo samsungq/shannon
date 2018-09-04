@@ -13,7 +13,7 @@ from networks import mlp5
 # Parse arguments
 parser = ArgumentParser()
 parser.add_argument("--output_dir", type=str, required=False, default="./Outputs/MNIST/Default")
-parser.add_argument("--trials", type=int, required=False, default=10)  # n_trials for each k subset (since we randomly subset)
+parser.add_argument("--trials", type=int, required=False, default=3)  # n_trials for each k subset (since we randomly subset)
 parser.add_argument("--train_iters", type=int, required=False, default=4001)  # n_epochs
 parser.add_argument("--validation_rate", type=int, required=False, default=500)
 args = parser.parse_args()
@@ -80,13 +80,11 @@ f_m_sum = tf.summary.histogram("f_m_sum", f_m)
 f_loss_sum = tf.summary.scalar("f_loss_sum", f_loss)
 merged_sum = tf.summary.merge_all()
 
-# Init op                                                                                                                 
 init_op = tf.global_variables_initializer()
 
 ## Run Training                                                                                                           
 # Select subset of training data                                                                                          
-# train_subset = np.array([0.005, 0.01, 0.05, 0.10, 0.25, 0.50, 1.00])
-train_subset = np.array([0.005, 0.50, 1.00])
+train_subset = np.array([0.005, 0.01, 0.05, 0.10, 0.25, 0.50, 1.00])
 N_train_subset = np.array(N_train*train_subset, np.int32)  # N_train*train_subset = number of <x,y> to extract
 
 # Number of times to run per subset
@@ -158,9 +156,9 @@ with tf.Session() as sess:
                 writer.add_summary(_sum, i)
 
                 # Validate after each epochs
-                if i % args.validation_rate == 0:
-                    valid_mi = evaluate_mi(sess, f_j_mean, x_j, y_j, mnist.validation.images, mnist.validation.labels, N_valid)
-                    f_mi.write("valid mi:" + str(valid_mi) + "\t")
+                # if i % args.validation_rate == 0:
+                    # valid_mi = evaluate_mi(sess, f_j_mean, x_j, y_j, mnist.validation.images, mnist.validation.labels, N_valid)
+                    # f_mi.write("valid mi:" + str(valid_mi) + "\t")
 
                     # valid_acc_j = evaluate_acc(sess, accuracy_j, x_j, y_j, mnist.validation.images, mnist.validation.labels, N_valid, True)
                     # valid_acc_m = evaluate_acc(sess, accuracy_m, x_m, y_m, mnist.validation.images, mnist.validation.labels, N_valid, False)
@@ -171,7 +169,7 @@ with tf.Session() as sess:
             # 3 trials means 3 test_mi for each subset partition
             test_mi = evaluate_mi(sess, f_j_mean, x_j, y_j, mnist.test.images, mnist.test.labels, N_test)
             # print("Test MI for {0} of the data: {1}".format(train_subset[k], test_mi))
-            f_mi.write(str("test mi:" + str(test_mi) + "\n"))
+            f_mi.write(str(k) + str("test mi:" + str(test_mi) + "\n"))
 
         f_mi.close()
 
