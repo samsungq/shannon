@@ -12,6 +12,7 @@ since we dont have the entire distribution p(X) we cannot directly estimate mutu
 ## setup
 you need python3 and tensorflow. run the following:
 ```
-python mnist.py --output_dir="./Outputs/MNIST/Default" --trials=3 --train_iters=1000
+python shannon.py --dataset_name mnist
 ```
+other datasets include cifar10 and cifar100.
 
