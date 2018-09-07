@@ -1,20 +1,19 @@
-from util import fetch_data
-
 from argparse import ArgumentParser
 import os
 
 import numpy as np
-import tensorflow as tf
-from tensorflow.examples.tutorials.mnist import input_data
 from tqdm import trange
+
+import tensorflow as tf
 
 from aux_functions import makedirs, log, sample_pxy, sample_px, sample_py, evaluate_acc, evaluate_mi
 from networks import mlp5
+from util import fetch_data
 
 
 # Parse arguments
 parser = ArgumentParser()
-parser.add_argument("--dataset_name", type=str, required=True, default="mnist")
+parser.add_argument("--dataset", type=str, required=True, default="mnist")
 parser.add_argument("--output_dir", type=str, required=False, default="./Outputs/MNIST/Default")
 parser.add_argument("--trials", type=int, required=False, default=3)  # n_trials for each k subset (since we randomly subset)
 parser.add_argument("--train_iters", type=int, required=False, default=4001)  # n_epochs
@@ -27,7 +26,7 @@ makedirs(output_dir)
 
 
 # Import data
-X_train, X_test, y_train, y_test = fetch_data(args.dataset_name, test_size=.10)
+X_train, X_test, y_train, y_test = fetch_data(args.dataset, test_size=.10)
 N_train = y_train.shape[0]
 N_test = y_test.shape[0]
 n_dim = X_train[0].shape[0]
@@ -171,7 +170,7 @@ with tf.Session() as sess:
 
             # Evaluate mutual information on test set for each trial
             # 3 trials means 3 test_mi for each subset partition
-            test_mi = evaluate_mi(sess, f_j_mean, x_j, y_j, mnist.test.images, mnist.test.labels, N_test)
+            test_mi = evaluate_mi(sess, f_j_mean, x_j, y_j, X_test, y_test, N_test)
             # print("Test MI for {0} of the data: {1}".format(train_subset[k], test_mi))
             f_mi.write(str(k) + str("test mi:" + str(test_mi) + "\n"))
 
